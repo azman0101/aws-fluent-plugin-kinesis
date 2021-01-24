@@ -16,6 +16,7 @@ require_relative '../test/helper'
 require 'fluent/plugin/out_kinesis_streams'
 require 'fluent/plugin/out_kinesis_streams_aggregated'
 require 'fluent/plugin/out_kinesis_firehose'
+require 'fluent/plugin/out_kinesis_firehose_aggregated'
 require 'benchmark'
 require 'net/empty_port'
 
@@ -83,11 +84,13 @@ class KinesisBenchmark
               Fluent::Plugin::KinesisStreamsAggregatedOutput
             when :firehose
               Fluent::Plugin::KinesisFirehoseOutput
+            when :firehose_aggregated
+              Fluent::Plugin::KinesisFirehoseAggregatedOutput
             end
     conf += case type
             when :streams, :streams_aggregated
               "stream_name fluent-plugin-test"
-            when :firehose
+            when :firehose, :firehose_aggregated
               "delivery_stream_name fluent-plugin-test"
             end
 
@@ -98,7 +101,7 @@ class KinesisBenchmark
   def benchmark(size, count)
     record = {"a"=>"a"*size}
     Benchmark.bmbm(20) do |x|
-      [:streams_aggregated, :streams, :firehose].each do |type|
+      [:streams_aggregated, :streams, :firehose, :firehose_aggregated].each do |type|
         x.report(type)  { driver_run(create_driver(type),  count.times.map{|i|record}) }
       end
     end

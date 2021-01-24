@@ -9,6 +9,7 @@ that sends events to [Amazon Kinesis Data Streams][streams] and [Amazon Kinesis 
 
 - `kinesis_streams`
 - `kinesis_firehose`
+- `kinesis_firehose_aggregated`
 - `kinesis_streams_aggregated`
 
 Also, there is a [documentation on Fluentd official site][fluentd-doc-kinesis].
@@ -92,6 +93,15 @@ For more details, see [Configuration: kinesis_streams](#configuration-kinesis_st
     </match>
 For more details, see [Configuration: kinesis_firehose](#configuration-kinesis_firehose).
 
+
+### kinesis_firehose_aggregated
+    <match your_tag>
+      @type kinesis_firehose_aggregated
+      region us-east-1
+      delivery_stream_name your_stream
+    </match>
+For more details, see [Configuration: kinesis_firehose_aggregated](#configuration-kinesis_firehose_aggregated).
+
 ### kinesis_streams_aggregated
     <match your_tag>
       @type kinesis_streams_aggregated
@@ -118,7 +128,7 @@ Note: Each value should be adjusted to your system by yourself.
 ## Configuration: Credentials
 To put records into Amazon Kinesis Data Streams or Firehose, you need to provide AWS security credentials somehow. Without specifying credentials in config file, this plugin automatically fetch credential just following AWS SDK for Ruby does (environment variable, shared profile, and instance profile).
 
-This plugin uses the same configuration in [fluent-plugin-s3][fluent-plugin-s3], but also supports aws session tokens for temporary credentials. 
+This plugin uses the same configuration in [fluent-plugin-s3][fluent-plugin-s3], but also supports aws session tokens for temporary credentials.
 
 **aws_key_id**
 
@@ -130,7 +140,7 @@ AWS secret key. This parameter is required when your agent is not running on EC2
 
 **aws_ses_token**
 
-AWS session token. This parameter is optional, but can be provided if using MFA or temporary credentials when your agent is not running on EC2 instance with an IAM Role. 
+AWS session token. This parameter is optional, but can be provided if using MFA or temporary credentials when your agent is not running on EC2 instance with an IAM Role.
 
 **aws_iam_retries**
 
@@ -359,7 +369,7 @@ Specifing compression way for data of each record. Current accepted options are 
 Integer, default 1024. When emitting the log entry, the message will be truncated by this size to avoid infinite loop when the log is also sent to Kinesis. The value 0 means no truncation.
 
 ### chomp_record
-Boolean. Default `false`. If it is enabled, the plugin calls chomp and removes separator from the end of each record. This option is for compatible format with plugin v2. See [#142](https://github.com/awslabs/aws-fluent-plugin-kinesis/issues/142) for more details.  
+Boolean. Default `false`. If it is enabled, the plugin calls chomp and removes separator from the end of each record. This option is for compatible format with plugin v2. See [#142](https://github.com/awslabs/aws-fluent-plugin-kinesis/issues/142) for more details.
 When you use [kinesis_firehose](#kinesis_firehose) output, [append_new_line](#append_new_line) option is `true` as default. If [append_new_line](#append_new_line) is enabled, the plugin calls chomp as [chomp_record](#chomp_record) is `true` before appending `\n` to each record. Therefore, you don't need to enable [chomp_record](#chomp_record) option when you use [kinesis_firehose](#kinesis_firehose) with default configuration. If you want to set [append_new_line](#append_new_line) `false`, you can choose [chomp_record](#chomp_record) `false` (default) or `true` (compatible format with plugin v2).
 
 ## Configuration: API
@@ -472,7 +482,7 @@ you ought to specify the corresponding attributes in buffer section:
 For more details, refer [Placeholders section in the official Fluentd document](https://docs.fluentd.org/configuration/buffer-section#placeholders).
 
 ### append_new_line
-Boolean. Default `true`. If it is enabled, the plugin adds new line character (`\n`) to each serialized record.  
+Boolean. Default `true`. If it is enabled, the plugin adds new line character (`\n`) to each serialized record.
 Before appending `\n`, plugin calls chomp and removes separator from the end of each record as [chomp_record](#chomp_record) is `true`. Therefore, you don't need to enable [chomp_record](#chomp_record) option when you use [kinesis_firehose](#kinesis_firehose) output with default configuration ([append_new_line](#append_new_line) is `true`). If you want to set [append_new_line](#append_new_line) `false`, you can choose [chomp_record](#chomp_record) `false` (default) or `true` (compatible format with plugin v2).
 
 ## Configuration: kinesis_streams_aggregated

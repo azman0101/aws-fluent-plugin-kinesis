@@ -118,7 +118,7 @@ module Fluent
               next unless record[:error_code]
               original = case request_type
                          when :streams, :firehose; records[index]
-                         when :streams_aggregated; records
+                         when :streams_aggregated, :firehose_aggregated; records
                          end
               failed_records.push(
                 original:      original,
@@ -133,7 +133,7 @@ module Fluent
             case request_type
             when :streams, :firehose
               failed_records.map{|r| r[:original] }
-            when :streams_aggregated
+            when :streams_aggregated, :firehose_aggregated
               failed_records.first[:original]
             end
           end
