@@ -18,11 +18,11 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'fluent_plugin_kinesis/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "fluent-plugin-kinesis"
+  spec.name          = "aws-fluent-plugin-kinesis"
   spec.version       = FluentPluginKinesis::VERSION
   spec.author        = 'Amazon Web Services'
   spec.summary       = %q{Fluentd output plugin that sends events to Amazon Kinesis.}
-  spec.homepage      = "https://github.com/awslabs/aws-fluent-plugin-kinesis"
+  spec.homepage      = "https://github.com/azman0101/aws-fluent-plugin-kinesis"
   spec.license       = "Apache-2.0"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
