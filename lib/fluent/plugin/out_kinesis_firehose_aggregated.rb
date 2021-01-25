@@ -29,6 +29,7 @@ module Fluent
 
       def configure(conf)
         super
+        @partition_key_generator = create_partition_key_generator
         if @append_new_line
           org_data_formatter = @data_formatter
           @data_formatter = ->(tag, time, record) {
@@ -54,6 +55,14 @@ module Fluent
             delivery_stream_name: delivery_stream_name,
             records: aggregator.aggregate(records),
           )
+        end
+      end
+
+      def create_partition_key_generator
+        if @fixed_partition_key.nil?
+          ->() { SecureRandom.hex(16) }
+        else
+          ->() { @fixed_partition_key }
         end
       end
     end
