@@ -45,6 +45,15 @@ module Fluent
 
         MagicNumber = ['F3899AC2'].pack('H*')
 
+        def aggregate_firehose(records)
+          message = AggregatedRecord.encode(AggregatedRecord.new(
+            records: records.map{|data|
+              Record.new(data: data)
+            },
+          ))
+          [MagicNumber, message, Digest::MD5.digest(message)].pack("A4A*A16")
+        end
+
         def aggregate(records, partition_key)
           message = AggregatedRecord.encode(AggregatedRecord.new(
             partition_key_table: ['a', partition_key],

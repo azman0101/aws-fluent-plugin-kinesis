@@ -31,7 +31,6 @@ module Fluent
 
       def configure(conf)
         super
-        @partition_key_generator = create_partition_key_generator
         if @append_new_line
           org_data_formatter = @data_formatter
           @data_formatter = ->(tag, time, record) {
@@ -49,24 +48,16 @@ module Fluent
       def write(chunk)
         delivery_stream_name = extract_placeholders(@delivery_stream_name, chunk)
         write_records_batch(chunk) do |batch|
-          key = @partition_key_generator.call
           records = batch.map{|(data)|
             { data: data }
           }
           client.put_record_batch(
             delivery_stream_name: delivery_stream_name,
-            records: aggregator.aggregate(records, key),
+            records: aggregator.aggregate_firehose(records),
           )
         end
       end
 
-      def create_partition_key_generator
-        if @fixed_partition_key.nil?
-          ->() { SecureRandom.hex(16) }
-        else
-          ->() { @fixed_partition_key }
-        end
-      end
     end
   end
 end
