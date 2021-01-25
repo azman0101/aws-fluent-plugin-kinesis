@@ -13,11 +13,13 @@
 # language governing permissions and limitations under the License.
 
 require 'fluent/plugin/kinesis'
+require 'fluent/plugin/kinesis_helper/aggregator'
 
 module Fluent
   module Plugin
     class KinesisFirehoseAggregatedOutput < KinesisOutput
       Fluent::Plugin.register_output('kinesis_firehose_aggregated', self)
+      include KinesisHelper::Aggregator::Mixin
 
       RequestType = :firehose_aggregated
       BatchRequestLimitCount = 500
@@ -53,7 +55,7 @@ module Fluent
           }
           client.put_record_batch(
             delivery_stream_name: delivery_stream_name,
-            records: aggregator.aggregate(records),
+            records: aggregator.aggregate(records, key),
           )
         end
       end
