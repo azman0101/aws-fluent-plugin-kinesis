@@ -106,7 +106,7 @@ module Fluent
           when :streams, :streams_aggregated
             require 'aws-sdk-kinesis'
             Aws::Kinesis::Client
-          when :firehose
+          when :firehose, :firehose_aggredated
             require 'aws-sdk-firehose'
             Aws::Firehose::Client
           end
@@ -135,7 +135,7 @@ module Fluent
           when @aws_key_id && @aws_sec_key && @aws_ses_token
             options[:access_key_id] = @aws_key_id
             options[:secret_access_key] = @aws_sec_key
-            options[:session_token] = @aws_ses_token  
+            options[:session_token] = @aws_ses_token
           when @aws_key_id && @aws_sec_key
             options[:access_key_id] = @aws_key_id
             options[:secret_access_key] = @aws_sec_key
