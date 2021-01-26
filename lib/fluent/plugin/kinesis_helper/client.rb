@@ -106,7 +106,7 @@ module Fluent
           when :streams, :streams_aggregated
             require 'aws-sdk-kinesis'
             Aws::Kinesis::Client
-          when :firehose, :firehose_aggredated
+          when :firehose, :firehose_aggregated
             require 'aws-sdk-firehose'
             Aws::Firehose::Client
           end

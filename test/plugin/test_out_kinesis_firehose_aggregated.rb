@@ -18,6 +18,8 @@ require 'fluent/plugin/out_kinesis_firehose_aggregated'
 class KinesisFirehoseAggregatedOutputTest < Test::Unit::TestCase
   KB = 1024
   MB = 1024 * KB
+  AggregateOffset = Fluent::Plugin::KinesisHelper::Aggregator::Mixin::AggregateOffset
+  RecordOffset = Fluent::Plugin::KinesisHelper::Aggregator::Mixin::RecordOffset
 
   def setup
     ENV['AWS_REGION'] = 'ap-northeast-1'
@@ -51,7 +53,7 @@ class KinesisFirehoseAggregatedOutputTest < Test::Unit::TestCase
   end
 
   def self.data_of(size, char = 'a')
-    new_line_size = 1
+    new_line_size = RecordOffset
     char.b * ((size - new_line_size)/char.b.size)
   end
 

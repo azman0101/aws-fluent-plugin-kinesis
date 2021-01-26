@@ -48,9 +48,7 @@ module Fluent
       def write(chunk)
         delivery_stream_name = extract_placeholders(@delivery_stream_name, chunk)
         write_records_batch(chunk) do |batch|
-          records = batch.map{|(data)|
-            { data: data }
-          }
+          records = batch.map{|(data)|data}
           client.put_record_batch(
             delivery_stream_name: delivery_stream_name,
             records: aggregator.aggregate_firehose(records),
